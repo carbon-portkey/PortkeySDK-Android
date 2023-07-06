@@ -2,10 +2,14 @@ package com.example.portkeysdk;
 
 import android.os.Bundle;
 
+import com.example.portkeysdk.init.GlobalConfig;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 
 import androidx.navigation.NavController;
@@ -17,11 +21,16 @@ import com.example.portkeysdk.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import io.aelf.sdkv2.AElfClientV2;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    public static final String MainActivityTag="MainActivity";
+    private AElfClientV2 client = GlobalConfig.getIns().getClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.toolbar);
+        binding.button.setOnClickListener(view -> this.queryBlockChainHeight());
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        binding.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
     }
 
     @Override
@@ -45,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    public void queryBlockChainHeight() {
+        client.getBlockHeightAsync(
+                res -> MainActivity.this.runOnUiThread((()-> Toast.makeText(this, "The Block Chain Height is : "+res.result, Toast.LENGTH_SHORT).show())),
+                fail -> Log.e(MainActivityTag,"queryBlockChainHeight : failed! reason : "+fail.resultCode)
+        );
     }
 
     @Override
@@ -60,12 +70,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
     }
 }

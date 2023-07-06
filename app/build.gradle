@@ -6,12 +6,23 @@ android {
     namespace 'com.example.portkeysdk'
     compileSdk 33
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
     defaultConfig {
         applicationId "com.example.portkeysdk"
-        minSdk 24
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
+        ndk {
+            abiFilters 'arm64-v8a', 'x86_64'
+        }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,8 +49,29 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.navigation:navigation-fragment:2.4.1'
     implementation 'androidx.navigation:navigation-ui:2.4.1'
-    implementation files('libs/aelf-sdk.jar')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    implementation('org.slf4j:slf4j-simple:1.7.25')
+    implementation('org.slf4j:slf4j-api:1.7.25')
+    implementation('com.google.protobuf:protobuf-java:3.11.1')
+    implementation('org.web3j:crypto:3.3.1')
+    implementation('com.lmax:disruptor:3.4.2')
+    implementation('org.apache.logging.log4j:log4j-api:2.6.2')
+    implementation('org.apache.logging.log4j:log4j-core:2.6.2')
+    implementation('com.fasterxml.jackson.core:jackson-databind:2.10.1')
+    implementation('org.apache.commons:commons-lang3:3.4')
+    implementation('org.apache.httpcomponents:httpclient:4.5')
+    implementation('org.bouncycastle:bcprov-jdk15on:1.60')
+    implementation('org.bitcoinj:bitcoinj-core:0.14.3')
+    implementation('com.squareup.retrofit2:retrofit:2.9.0')
+    implementation ('com.google.code.findbugs:jsr305:3.0.2')
+
+
+
+    // Solve the conflict problem... LOL
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+
 }
